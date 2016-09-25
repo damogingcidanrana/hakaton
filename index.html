@@ -3,14 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>Testing Matter.js</title>
+    <script src="js/matter.js"></script>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.1.0.slim.min.js"></script>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="js/jquery-3.1.0.slim.min.js"></script>
+    <script src="js/socket.io-1.4.5.js"></script>
+    <script src="js/graphics.min.js"></script>
   </head>
   <body>
-    <div class="animal" id="animal"></div>
+    <div id="container" draggable="false">
+      <div class="animal" id="animal"></div>
+    </div>
+    <div id="fps"></div>
+    <div id="states"></div>
   </body>
-  <script src="js/matter.js"></script>
   <script src="js/demo.js"></script>
-  <script src="js/scripts.js"></script>
+  <script src="js/bobr.js"></script>
 </html>
