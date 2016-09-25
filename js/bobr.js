@@ -9,7 +9,8 @@ function bobr(id,$svg_wrappper) {
 			position = {
 				'jump_in': false,
 				'run' : false,
-				//'eat' : false,
+				'eat' : false,
+				'run_out' :false,
 				'jump_out': false
 			};
 
@@ -29,8 +30,7 @@ function bobr(id,$svg_wrappper) {
 		});
 	}
 
-	this.jump_in = function(side,cords,id_figure) {
-		ini_time = 2000;
+	this.jump_in = function(side,cords,id_figure,ini_time) {
 		var jump = [
 			{
 				"style": {
@@ -42,7 +42,8 @@ function bobr(id,$svg_wrappper) {
 					'transition':'transform 150ms linear',
 					'transition':'transform 150ms linear, -webkit-transform 150ms linear'
 				},
-				"time": 150
+				"time": 150,
+				"jump_start": ""
 			},
 			{
 				"style": {
@@ -66,14 +67,15 @@ function bobr(id,$svg_wrappper) {
 					'transition':'transform 150ms linear',
 					'transition':'transform 150ms linear, -webkit-transform 150ms linear'
 				},
-				"time": 150
+				"time": 150,
+				"jump_end": ""
 			},
 		].reverse();
 		position['jump_in'] = true;
 		this.update_anims(ini_time,jump,id_figure,side,cords);
 	}
 
-	this.jump_out = function(side,cords,id_figure) {
+	this.jump_out = function(side,cords,id_figure,ini_time) {
 		var jump = [
 			{
 				"style": {
@@ -85,7 +87,9 @@ function bobr(id,$svg_wrappper) {
 					'transition':'transform 150ms linear',
 					'transition':'transform 150ms linear, -webkit-transform 150ms linear'
 				},
-				"time": 150
+				"time": 150,
+				"jump_start": "",
+				"reverse": ""
 			},
 			{
 				"style": {
@@ -97,14 +101,46 @@ function bobr(id,$svg_wrappper) {
 					'transition':'transform 150ms linear',
 					'transition':'transform 150ms linear, -webkit-transform 150ms linear'
 				},
-				"time": 150
+				"time": 150,
+				"jump_end": "",
+				"reverse": ""
 			}
 		].reverse();
 		position['jump_out'] = true;
 		this.update_anims(ini_time,jump,id_figure,side,cords);
 	}
 
-	this.run = function(side,cords,id_figure)  {
+	this.eat = function(side,cords,id_figure,ini_time) {
+		var cordVal = cords+'px';
+		var anims = [
+			{
+				"style": {
+					'-webkit-transition': 'ease 1000ms all',
+					'transition': 'ease 1000ms all',
+					'-webkit-transform':'translateX('+cordVal+')',
+					'transform':'translateX('+cordVal+')',
+					'will-change':'transform'
+				},
+				"time": 1000,
+				"background": ""
+			},
+			{
+				"style": {
+					'-webkit-transition': 'ease 1000ms all',
+					'transition': 'ease 1000ms all',
+					'-webkit-transform':'translateX('+cordVal+')',
+					'transform':'translateX('+cordVal+')',
+					'will-change':'transform'
+				},
+				"time": 1000,
+				"background": ""
+			}
+		].reverse();
+		position['eat'] = true;
+		this.update_anims(ini_time,anims,id_figure,side,cords);
+	}
+
+	this.run = function(side,cords,id_figure,ini_time)  {
 		var cordVal = cords+'px';
 		var anims = [
 			{
@@ -118,33 +154,18 @@ function bobr(id,$svg_wrappper) {
 					'transition':'transform 1000ms linear, -webkit-transform 1000ms linear'
 				},
 				"time": 1000
-			},
+			}
+		];
+		position['run'] = true;
+		this.update_anims(ini_time,anims,id_figure,side,cords);
+	}
+	this.run_out = function(side,cords,id_figure,ini_time)  {
+		var cordVal = cords+'px';
+		var anims = [
 			{
 				"style": {
-					'-webkit-transition': 'ease 1000ms all',
-					'transition': 'ease 1000ms all',
-					'-webkit-transform':'translateX('+cordVal+')',
-					'transform':'translateX('+cordVal+')',
-					'will-change':'transform'
-				},
-				"time": 1000,
-				"background": ""
-			},
-			{
-				"style": {
-					'-webkit-transition': 'ease 1000ms all',
-					'transition': 'ease 1000ms all',
-					'-webkit-transform':'translateX('+cordVal+')',
-					'transform':'translateX('+cordVal+')',
-					'will-change':'transform'
-				},
-				"time": 1000,
-				"background": ""
-			},
-			{
-				"style": {
-					'-webkit-transform':'translateX(20%)',
-					'transform': 'translateX(20%)',
+					'-webkit-transform':'translateX(40px)',
+					'transform': 'translateX(40px)',
 					'will-change':'transform',
 					'-webkit-transition':'-webkit-transform 1000ms linear',
 					'transition':'-webkit-transform 1000ms linear',
@@ -154,47 +175,61 @@ function bobr(id,$svg_wrappper) {
 				"time": 1000,
 				"reverse": ""
 			}
-		].reverse();
-		position['run'] = true;
+		];
+		position['run_out'] = true;
 		this.update_anims(ini_time,anims,id_figure,side,cords);
 	}
 
 	this.beaver_run = function(cords,id_figure,side) {
 		$bobr.removeClass('reverse');
-		this.jump_in(side,cords,id_figure);
-		//this.update_anims(ini_time,anims,id_figure);
+		ini_time = 2000;
+		this.jump_in(side,cords,id_figure,ini_time);
 	}
 
 	this.update_anims = function(ini_time,anims,id_figure,side,cords) {
-		var current_anim = anims.pop();
-		if (current_anim) {
-			setTimeout(function(){
-				$bobr.css(current_anim.style);
-					if ("background" in current_anim) {
-						$bobr.addClass('background-eat');
+			var current_anim = anims.pop();
+			if (current_anim) {
+				setTimeout(function(){
+					$bobr.css(current_anim.style);
+						if ("background" in current_anim) {
+							$bobr.addClass('background-eat');
+						}
+						if ("reverse" in current_anim) {
+							$bobr.removeClass('background-eat').addClass('reverse');
+						};
+						if ("jump_start" in current_anim) {
+							$bobr.addClass('jump');
+						};
+						if ("jump_end" in current_anim) {
+							$bobr.removeClass('jump');
+						};
+					ini_time = current_anim.time;
+					if (!stop) {
+						that.update_anims(ini_time,anims,id_figure,side,cords);
 					}
-					if ("reverse" in current_anim) {
-						$bobr.removeClass('background-eat').addClass('reverse');
-					};
-				ini_time = current_anim.time;
-				if (!stop) {
-					that.update_anims(ini_time,anims,id_figure,side,cords);
+				}, ini_time);
+			} else {
+				switch (this.position()) {
+					case'run':
+						that.run(side,cords,id_figure,ini_time);
+						break;
+					case 'eat':
+						if (false) {
+							that.eat(side,cords,id_figure,ini_time);
+							break;
+						} else {
+							position['eat'] = true;
+							this.update_anims(ini_time,anims,id_figure,side,cords);
+						}
+					case 'run_out':
+						that.run_out(side,cords,id_figure,ini_time);
+						break;
+					case 'jump_out':
+						that.jump_out(side,cords,id_figure,ini_time);
+						break;
 				}
-			}, ini_time);
-		} else {
-			this.position();
-			switch (this.position()) {
-				case'run':
-					this.run(side,cords,id_figure);
-					break;
-				// case 'eat':
-				// 	break;
-				case 'jump_out':
-					this.jump_out(side,cords,id_figure);
-					break;
-			}
 
-		}
+			}
 	}
 
 	this.position = function() {
